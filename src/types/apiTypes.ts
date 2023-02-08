@@ -25,8 +25,11 @@ export const DictionaryAPITypes = z.array(
 						definition: z.string(),
 						synonyms: z.array(z.string()),
 						antonyms: z.array(z.string()),
+						example: z.string().optional(),
 					})
 				),
+				synonyms: z.array(z.string()).optional(),
+				antonyms: z.array(z.string()).optional(),
 			})
 		),
 		license: z.object({

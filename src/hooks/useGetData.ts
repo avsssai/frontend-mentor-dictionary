@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import axios, { AxiosResponse } from "axios";
+import axios, { AxiosResponse, AxiosError } from "axios";
 import { ZodError } from "zod";
 import { DictionaryAPIRes, DictionaryAPITypes } from "../types/apiTypes";
 
@@ -9,12 +9,16 @@ async function getResult(word: string): Promise<AxiosResponse<DictionaryAPIRes>>
 		const word_url = `${URL_BASE}/${word}`;
 		const res = await axios.get(word_url);
 		DictionaryAPITypes.parse(res.data);
-		return res.data;
-	} catch (error: any) {
+		return res;
+	} catch (error) {
 		if (error instanceof ZodError) {
 			console.log(error.issues);
 		}
-		return error.message;
+		const err = error as AxiosError;
+		if (err?.response?.status === 404) {
+			throw new Error("Whoops! we can't find the word.");
+		}
+		throw new Error("something went wrong, it might be due to a word being entered wrong." as any);
 	}
 }
 
