@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, QueryClient } from "@tanstack/react-query";
 import axios, { AxiosResponse, AxiosError } from "axios";
 import { ZodError } from "zod";
 import { DictionaryAPIRes, DictionaryAPITypes } from "../types/apiTypes";
@@ -24,5 +24,22 @@ async function getResult(word: string): Promise<AxiosResponse<DictionaryAPIRes>>
 }
 
 export default function useGetData(word: string) {
-	return useQuery({ queryKey: ["word", word], queryFn: () => getResult(word) });
+	return useQuery({
+		queryKey: ["word", word],
+		queryFn: () => getResult(word),
+		refetchOnWindowFocus: false,
+		retry: 1,
+	});
+}
+
+// not required
+export async function mountSynonym(word: string) {
+	const queryClient = new QueryClient();
+	try {
+		const data = await queryClient.fetchQuery({ queryKey: ["word", word], queryFn: () => getResult(word) });
+		queryClient.setQueryData(["word", word], data);
+		return data;
+	} catch (error) {
+		throw new Error("Whoops! we can't find the word.");
+	}
 }

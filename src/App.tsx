@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ThemeSwitcher from "./components/ThemeSwitcher";
-import useGetData from "./hooks/useGetData";
-import { Book, Search, ExternalLink } from "react-feather";
+import useGetData, { mountSynonym } from "./hooks/useGetData";
+import { Book, Search, ExternalLink, AlertCircle } from "react-feather";
 import useStickyState from "./hooks/useStickyState";
 import Phonetics from "./components/Phonetics";
 import { PhoneticRes } from "./types/apiTypes";
@@ -19,6 +19,10 @@ function App() {
 		setSearchTerm(input);
 	};
 
+	function updateSearch(syn: string) {
+		setSearchTerm(syn);
+		setInput(syn);
+	}
 	const Loader = () => (
 		<div className=' flex justify-center items-center'>
 			<div className='animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 dark:border-gray-200'></div>
@@ -53,6 +57,7 @@ function App() {
 						<ThemeSwitcher moonColor='#adb5bd' sunColor='#f5cb5c' />
 					</div>
 				</div>
+
 				<div className='app p-4'>
 					<form onSubmit={getWord} className='relative mb-16'>
 						<input
@@ -62,12 +67,16 @@ function App() {
 							placeholder='Search for a word...'
 							value={input}
 						/>
-						{isError ? <div className='error text-red-500'>{(error as any).message}</div> : ""}
+
 						<Search className='absolute right-6 top-4 text-purple-500' />
 					</form>
 					{/* <div className='word'>{data?.data}</div> */}
 					{isLoading ? (
 						<Loader />
+					) : isError ? (
+						<div className='error text-red-500 flex justify-center items-center text-3xl gap-3'>
+							<AlertCircle color='red' /> {(error as any).message}
+						</div>
 					) : (
 						<>
 							<div className='text-4xl md:text-6xl font-bold mb-2 md:mb-6 flex justify-between items-center'>
@@ -104,9 +113,11 @@ function App() {
 												<span className='text-gray-600 dark:text-gray-400'> Synonyms </span>
 												{meaning.synonyms.map((syn) => (
 													<span key={syn} className='ml-8 text-purple-500 font-black'>
-														<a href='#' target={"_blank"}>
+														<span
+															className='cursor-pointer'
+															onClick={() => updateSearch(syn)}>
 															{syn}
-														</a>
+														</span>
 													</span>
 												))}
 											</div>
