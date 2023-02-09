@@ -18,6 +18,7 @@ async function getResult(word: string): Promise<AxiosResponse<DictionaryAPIRes>>
 		if (err?.response?.status === 404) {
 			throw new Error("Whoops! we can't find the word.");
 		}
+		console.log(error);
 		throw new Error("something went wrong, it might be due to a word being entered wrong." as any);
 	}
 }

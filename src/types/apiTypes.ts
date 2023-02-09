@@ -3,11 +3,11 @@ import { z } from "zod";
 export const DictionaryAPITypes = z.array(
 	z.object({
 		word: z.string(),
-		phonetic: z.string(),
+		phonetic: z.string().optional(),
 		phonetics: z.array(
 			z.object({
-				text: z.string(),
-				audio: z.string(),
+				text: z.string().optional(),
+				audio: z.string().optional(),
 				sourceUrl: z.string().optional(),
 				license: z
 					.object({
@@ -39,5 +39,21 @@ export const DictionaryAPITypes = z.array(
 		sourceUrls: z.array(z.string()),
 	})
 );
+
+export const PhoneticType = z.array(
+	z.object({
+		text: z.string().optional(),
+		audio: z.string().optional(),
+		sourceUrl: z.string().optional(),
+		license: z
+			.object({
+				name: z.string(),
+				url: z.string(),
+			})
+			.optional(),
+	})
+);
+
+export type PhoneticRes = z.infer<typeof PhoneticType>;
 
 export type DictionaryAPIRes = z.infer<typeof DictionaryAPITypes>;

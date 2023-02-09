@@ -10,6 +10,7 @@ module.exports = {
 			},
 		},
 	},
+	safelist: ["font-mono", "font-sans", "font-serif"],
 	darkMode: "class",
 	plugins: [],
 };

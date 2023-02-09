@@ -1,8 +1,10 @@
 import { useState } from "react";
 import ThemeSwitcher from "./components/ThemeSwitcher";
 import useGetData from "./hooks/useGetData";
-import { Book, Search } from "react-feather";
+import { Book, Search, ExternalLink } from "react-feather";
 import useStickyState from "./hooks/useStickyState";
+import Phonetics from "./components/Phonetics";
+import { PhoneticRes } from "./types/apiTypes";
 
 function App() {
 	const [input, setInput] = useStickyState("input", "keyboard");
@@ -68,11 +70,17 @@ function App() {
 						<Loader />
 					) : (
 						<>
-							<div className='text-4xl md:text-6xl font-bold mb-2 md:mb-6'>{res?.word}</div>
+							<div className='text-4xl md:text-6xl font-bold mb-2 md:mb-6 flex justify-between items-center'>
+								{res?.word}
+								<div>
+									<Phonetics phonetics={res?.phonetics as PhoneticRes} />
+								</div>
+							</div>
 							<div className='pronunciation text-purple-500 mb-8 md:text-2xl'>{res?.phonetic}</div>
-							<div className='meanings md:text-xl'>
-								{res?.meanings.map((meaning) => (
-									<div className='meaningWrapper mb-8' key={meaning.partOfSpeech}>
+
+							<div className='meanings md:text-xl mb-8'>
+								{res?.meanings.map((meaning, index) => (
+									<div className='meaningWrapper mb-8' key={`${meaning.partOfSpeech}-${index}`}>
 										<div className='pos text-xl md:text-2xl font-bold italic mb-8'>
 											{meaning.partOfSpeech}
 										</div>
@@ -107,6 +115,15 @@ function App() {
 										)}
 									</div>
 								))}
+							</div>
+							<div className='text-gray-600 dark:text-gray-400 mb-4 flex gap-8 items-center'>
+								Source
+								<a
+									href={res?.sourceUrls[0]}
+									className=' text-gray-800 dark:text-gray-200 flex items-center gap-2'>
+									{res?.sourceUrls[0]}
+									<ExternalLink size={12} />
+								</a>
 							</div>
 						</>
 					)}
