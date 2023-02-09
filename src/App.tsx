@@ -116,7 +116,7 @@ function App() {
 									</div>
 								))}
 							</div>
-							<div className='text-gray-600 dark:text-gray-400 mb-4 flex gap-8 items-center'>
+							<div className='text-gray-600 dark:text-gray-400 mb-4 flex gap-2 flex-col'>
 								Source
 								<a
 									href={res?.sourceUrls[0]}
